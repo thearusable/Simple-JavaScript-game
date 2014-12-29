@@ -5,6 +5,16 @@ function Ship(){
 	this.center_x = VAR.W / 2;
 	this.center_y = VAR.H / 2;
 	this.points = [{},{},{}];
+
+	this.draw_thrust = false;
+
+	//vector ruchu
+	this.modX = 0;
+	this.modY = 0;
+	// max szybkosc ruchu
+	this.maxMod = 0.019;
+	//przyspieszenie
+	this.acc = 0.001;
 }
 
 Ship.prototype.setPosition = function(xx,yy){
@@ -20,6 +30,29 @@ Ship.prototype.rotate = function(angle){
 	this.angle += angle;
 }
 
+Ship.prototype.update = function(){
+	if(GAME.key_left) this.rotate(-7); //lewo
+	if(GAME.key_right) this.rotate(7); //prawo
+	//przyspieszenie
+	if(GAME.key_up){
+		draw_thrust = true;
+		console.log("up");
+		this.modX = Math.max(-this.maxMod*VAR.MIN, Math.min(this.maxMod*VAR.MIN, this.modX+Math.sin(Math.PI/180*this.angle)*this.acc*VAR.MIN));
+		this.modY = Math.max(-this.maxMod*VAR.MIN, Math.min(this.maxMod*VAR.MIN, this.modY-Math.cos(Math.PI/180*this.angle)*this.acc*VAR.MIN));
+	}else draw_thrust = false;
+
+	//hamowanie
+	if(GAME.key_down){
+		this.modX = this.modX * 0.95;
+		this.modX = Math.abs(this.modX)<0.0002 ? 0 : this.modX;
+		this.modY = this.modY * 0.95;
+		this.modY = Math.abs(this.modY)<0.0002 ? 0 : this.modY;
+	}
+
+	this.center_x+=this.modX;
+	this.center_y+=this.modY;
+}
+
 Ship.prototype.draw = function(){
 	GAME.ctx.beginPath();
 	for(var i=0; i < 3; i++){
@@ -33,4 +66,18 @@ Ship.prototype.draw = function(){
 	}
 	GAME.ctx.closePath();
 	GAME.ctx.stroke();
+
+	// rysowanie odrzutu
+	if(this.draw_thrust == true){
+		Game.ctx.beginPath();
+		for (i = 0; i < 3; i++) {
+			this.tmp_a = i!=1 ? this.angle+180+(i===0 ? -this.rear_a+14 : this.rear_a-14) : this.angle+180;
+			this.tmp_r = i==1 ? this.r : this.r*0.5;
+			Game.ctx[i===0?'moveTo':'lineTo'](
+				(Math.sin(Math.PI/180*this.tmp_a)*this.tmp_r*VAR.MIN)+this.center_x,
+				(-Math.cos(Math.PI/180*this.tmp_a)*this.tmp_r*VAR.MIN)+this.center_y
+			);
+		}
+		Game.ctx.stroke();
+	}
 }
