@@ -35,18 +35,17 @@ Ship.prototype.update = function(){
 	if(GAME.key_right) this.rotate(7); //prawo
 	//przyspieszenie
 	if(GAME.key_up){
-		draw_thrust = true;
-		console.log("up");
+		this.draw_thrust = true;
 		this.modX = Math.max(-this.maxMod*VAR.MIN, Math.min(this.maxMod*VAR.MIN, this.modX+Math.sin(Math.PI/180*this.angle)*this.acc*VAR.MIN));
 		this.modY = Math.max(-this.maxMod*VAR.MIN, Math.min(this.maxMod*VAR.MIN, this.modY-Math.cos(Math.PI/180*this.angle)*this.acc*VAR.MIN));
-	}else draw_thrust = false;
+	}else this.draw_thrust = false;
 
 	//hamowanie
 	if(GAME.key_down){
 		this.modX = this.modX * 0.95;
-		this.modX = Math.abs(this.modX)<0.0002 ? 0 : this.modX;
+		this.modX = Math.abs(this.modX)<0.2 ? 0 : this.modX;
 		this.modY = this.modY * 0.95;
-		this.modY = Math.abs(this.modY)<0.0002 ? 0 : this.modY;
+		this.modY = Math.abs(this.modY)<0.2 ? 0 : this.modY;
 	}
 
 	this.center_x+=this.modX;
@@ -68,16 +67,15 @@ Ship.prototype.draw = function(){
 	GAME.ctx.stroke();
 
 	// rysowanie odrzutu
-	if(this.draw_thrust == true){
-		Game.ctx.beginPath();
+	if(this.draw_thrust){
+		GAME.ctx.beginPath();
 		for (i = 0; i < 3; i++) {
 			this.tmp_a = i!=1 ? this.angle+180+(i===0 ? -this.rear_a+14 : this.rear_a-14) : this.angle+180;
 			this.tmp_r = i==1 ? this.r : this.r*0.5;
-			Game.ctx[i===0?'moveTo':'lineTo'](
+			GAME.ctx[i===0?'moveTo':'lineTo'](
 				(Math.sin(Math.PI/180*this.tmp_a)*this.tmp_r*VAR.MIN)+this.center_x,
-				(-Math.cos(Math.PI/180*this.tmp_a)*this.tmp_r*VAR.MIN)+this.center_y
-			);
+				(-Math.cos(Math.PI/180*this.tmp_a)*this.tmp_r*VAR.MIN)+this.center_y);
 		}
-		Game.ctx.stroke();
+		GAME.ctx.stroke();
 	}
 }
