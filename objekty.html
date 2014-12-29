@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pl">
+	<head>
+		<meta charset="utf-8">
+		<title>Bardziej obiektowo</title>
+		<style>
+			body{
+				margin:0;
+				padding: 0;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<script>
+			// JavaScript nie ma klas. Używa funkcji jako konstruktorów.
+			// Aby zdefiniować klasę, wystarczy zdefiniować funkcję. Dla ułatwienia czytania kodu najlepiej nazwy funkcji, które mają być konstruktorami rozpoczynać dużą literą.
+			// Konstruktor definiuje podstawowe cechy każdej instancji, która powstanie po wywołaniu konstruktora.
+			//
+			// Funkcja animal przyjmuje dwa parametry, typ zwierzęcia i płeć.
+			function Animal(type, gender){
+				// Słowo kluczowe this odnosi się do instancji, która zostanie zwrócona po wywołaniu konstruktora.
+				// Aby przekazane dane nie przepadły zostają przypisane do nowo tworzonego obiektu, który będzie instancją typu Animal. Gender i type staną się właściwościami nowego obiektu.
+				this.gender = gender;
+				this.type = type;
+				//
+				// Liczę ilość samców i samic. coutMale i countFemale nie będą właściwościami instancji typu Animal. Będą wyłącznie metodami obiektu Animal (każda funkcja jest obiektem, więc konstruktor też jest obiektem).
+				if(gender=='male'){
+					Animal.countMale++;
+				}else if(gender=='female'){
+					Animal.countFemale++;
+				}
+			}
+			//Sam konstruktor też jest obiektrm, więc możemy dodawać do niego właściwości.
+			Animal.countMale = 0;
+			Animal.countFemale = 0;
+			//
+			//
+			// Metody obiektu to funkcje przypisane do obiektu. Można z nich korzystać tak jak z właściwości stosując notację kropkową.
+			// Aby zdefiniować nową metodę należy przypisać włąściwość do prototypu klasy, którą zdefiniowaliśmy.
+			Animal.prototype.eat = function(food){
+				// this odnosi się do obiektu, z którego zostanie wywołana metoda
+				this.lastEatenFood = food;
+				return food + ' zamienia się w kupę';
+			}
+			// Mimo, że w konstruktorze nie ma słowa kluczowego return, zostanie zwrócony obiekt, który nazywamy instancją danego typu.
+			//
+			// Do zmiennej o nazwie kot przypisuję instancję obiektu typu Animal
+			var kot = new Animal('cat', 'male');
+			console.log(kot);
+			//
+			console.log( kot.eat('szynka') );
+			//
+			//
+			// Dziedziczenie
+			// Definicja konstruktora
+			function Pet(name, type, gender){
+				// Wywołaj konstruktor rodzica
+				Animal.call(this, type, gender);
+				// przypisz dodatkowe właściwości
+				this.name = name
+			}
+			// dziedziczenie metod Animal
+			Pet.prototype = new Animal();
+			// construktor nie zostanie automatycznie nadpisany więc trzeba go przypisać ręcznie
+			Pet.prototype.constructor = Pet;
+			//
+			var pucek = new Pet('Pucek', 'dog', 'male')
+			console.log(pucek)
+			console.log( kot.eat('kiełbasa') );
+
+
+		</script>
+	</body>
+</html><!DOCTYPE html>
+<html lang="pl">
+	<head>
+		<meta charset="utf-8">
+		<title>Bardziej obiektowo</title>
+		<style>
+			body{
+				margin:0;
+				padding: 0;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<script>
+			// JavaScript nie ma klas. Używa funkcji jako konstruktorów.
+			// Aby zdefiniować klasę, wystarczy zdefiniować funkcję. Dla ułatwienia czytania kodu najlepiej nazwy funkcji, które mają być konstruktorami rozpoczynać dużą literą.
+			// Konstruktor definiuje podstawowe cechy każdej instancji, która powstanie po wywołaniu konstruktora.
+			//
+			// Funkcja animal przyjmuje dwa parametry, typ zwierzęcia i płeć.
+			function Animal(type, gender){
+				// Słowo kluczowe this odnosi się do instancji, która zostanie zwrócona po wywołaniu konstruktora.
+				// Aby przekazane dane nie przepadły zostają przypisane do nowo tworzonego obiektu, który będzie instancją typu Animal. Gender i type staną się właściwościami nowego obiektu.
+				this.gender = gender;
+				this.type = type;
+				//
+				// Liczę ilość samców i samic. coutMale i countFemale nie będą właściwościami instancji typu Animal. Będą wyłącznie metodami obiektu Animal (każda funkcja jest obiektem, więc konstruktor też jest obiektem).
+				if(gender=='male'){
+					Animal.countMale++;
+				}else if(gender=='female'){
+					Animal.countFemale++;
+				}
+			}
+			//Sam konstruktor też jest obiektrm, więc możemy dodawać do niego właściwości.
+			Animal.countMale = 0;
+			Animal.countFemale = 0;
+			//
+			//
+			// Metody obiektu to funkcje przypisane do obiektu. Można z nich korzystać tak jak z właściwości stosując notację kropkową.
+			// Aby zdefiniować nową metodę należy przypisać włąściwość do prototypu klasy, którą zdefiniowaliśmy.
+			Animal.prototype.eat = function(food){
+				// this odnosi się do obiektu, z którego zostanie wywołana metoda
+				this.lastEatenFood = food;
+				return food + ' zamienia się w kupę';
+			}
+			// Mimo, że w konstruktorze nie ma słowa kluczowego return, zostanie zwrócony obiekt, który nazywamy instancją danego typu.
+			//
+			// Do zmiennej o nazwie kot przypisuję instancję obiektu typu Animal
+			var kot = new Animal('cat', 'male');
+			console.log(kot);
+			//
+			console.log( kot.eat('szynka') );
+			//
+			//
+			// Dziedziczenie
+			// Definicja konstruktora
+			function Pet(name, type, gender){
+				// Wywołaj konstruktor rodzica
+				Animal.call(this, type, gender);
+				// przypisz dodatkowe właściwości
+				this.name = name
+			}
+			// dziedziczenie metod Animal
+			Pet.prototype = new Animal();
+			// construktor nie zostanie automatycznie nadpisany więc trzeba go przypisać ręcznie
+			Pet.prototype.constructor = Pet;
+			//
+			var pucek = new Pet('Pucek', 'dog', 'male')
+			console.log(pucek)
+			console.log( kot.eat('kiełbasa') );
+
+
+		</script>
+	</body>
+</html>
