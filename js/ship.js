@@ -1,5 +1,7 @@
 function Ship(){
-	this.r = 0.04;
+	this.r = 0.03;
+	this.scores = 0;
+
 	this.rear_a = 50;
 	this.angle = 0;
 	this.center_x = VAR.W / 2;
@@ -15,6 +17,10 @@ function Ship(){
 	this.maxMod = 0.019;
 	//przyspieszenie
 	this.acc = 0.001;
+}
+
+Ship.prototype.getPoints = function(){
+	return this.points;
 }
 
 Ship.prototype.setPosition = function(xx,yy){
@@ -48,11 +54,23 @@ Ship.prototype.update = function(){
 		this.modY = Math.abs(this.modY)<0.2 ? 0 : this.modY;
 	}
 
+	//jesli przekroczy ekran
+	if(this.center_x > VAR.W) this.center_x = 0;
+	if(this.center_x < 0) this.center_x = VAR.W;
+	if(this.center_y > VAR.H) this.center_y = 0;
+	if(this.center_y < 0) this.center_y = VAR.H;
+
+	//dodanie "predkosci"
 	this.center_x+=this.modX;
 	this.center_y+=this.modY;
+	
 }
 
 Ship.prototype.draw = function(){
+
+	GAME.ctx.fillStyle = 'white';
+	GAME.ctx.strokeStyle = 'white';
+	GAME.ctx.lineWidth = 4;
 	GAME.ctx.beginPath();
 	for(var i=0; i < 3; i++){
 		this.temp_a = i === 0 ? this.angle : (this.angle + 180 + (i==1 ? this.rear_a : -this.rear_a));
@@ -68,6 +86,9 @@ Ship.prototype.draw = function(){
 
 	// rysowanie odrzutu
 	if(this.draw_thrust){
+		GAME.ctx.fillStyle = 'red';
+		GAME.ctx.strokeStyle = 'yellow';
+		GAME.ctx.lineWidth = 5;
 		GAME.ctx.beginPath();
 		for (i = 0; i < 3; i++) {
 			this.tmp_a = i!=1 ? this.angle+180+(i===0 ? -this.rear_a+14 : this.rear_a-14) : this.angle+180;
@@ -76,6 +97,9 @@ Ship.prototype.draw = function(){
 				(Math.sin(Math.PI/180*this.tmp_a)*this.tmp_r*VAR.MIN)+this.center_x,
 				(-Math.cos(Math.PI/180*this.tmp_a)*this.tmp_r*VAR.MIN)+this.center_y);
 		}
+		GAME.ctx.closePath();
 		GAME.ctx.stroke();
 	}
+
+
 }

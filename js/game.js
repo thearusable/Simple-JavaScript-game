@@ -25,7 +25,17 @@ GAME = {
 
 		document.body.appendChild(GAME.canvas);
 
+		GAME.powerUp = new PowerUp();
 		GAME.ship = new Ship();
+		GAME.rocks = new Array();
+		GAME.rocks[0] = new Rock();
+		GAME.rocks[1] = new Rock();
+		GAME.rocks[2] = new Rock();
+		GAME.rocks[3] = new Rock();
+		GAME.rocks[4] = new Rock();
+		GAME.rocks[5] = new Rock();
+		GAME.rocks[6] = new Rock();
+		GAME.rocks[7] = new Rock();
 
 		GAME.animeLoop();
 	},
@@ -60,16 +70,48 @@ GAME = {
 
 	},
 
+	checkCollisions: function(){
+
+	},
+
 	animeLoop: function(time){
 		requestAnimationFrame(GAME.animeLoop);
 
 		if(time - VAR.LastTime >= 1000/VAR.FPS){
+			//colliosns
+			GAME.checkCollisions();
+			//update
 			GAME.ship.update();
+			GAME.rocks[0].update();
+			GAME.rocks[1].update();
+			GAME.rocks[2].update();
+			GAME.rocks[3].update();
+			GAME.rocks[4].update();
+			GAME.rocks[5].update();
+			GAME.rocks[6].update();
+			GAME.rocks[7].update();
+
+
 			VAR.LastTime = time;
 			GAME.ctx.clearRect(0,0,VAR.W, VAR.H);
+
+			//draw
 			GAME.ship.draw();
+			GAME.rocks[0].draw();
+			GAME.rocks[1].draw();
+			GAME.rocks[2].draw();
+			GAME.rocks[3].draw();
+			GAME.rocks[4].draw();
+			GAME.rocks[5].draw();
+			GAME.rocks[6].draw();
+			GAME.rocks[7].draw();
+			GAME.powerUp.draw();
 
 		}
+	},
+
+	endGame: function(){
+
 	}
 
 }
