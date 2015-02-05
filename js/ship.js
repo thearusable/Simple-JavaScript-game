@@ -1,6 +1,5 @@
 function Ship(){
 	this.r = 0.03;
-	this.scores = 0;
 
 	this.rear_a = 50;
 	this.angle = 0;
@@ -66,8 +65,7 @@ Ship.prototype.update = function(){
 	
 };
 
-Ship.prototype.hitTest = function(){
-	// Jeśli żaden z puntów tworzących statek nie pokrywa się z żadnym z kamieni to wszystko jest OK
+Ship.prototype.hitRocks = function(){
 	for (var i = 0; i < this.points.length; i++) {
 		for(var r=0; r<GAME.rocks.length; r++){
             var temp = this.points[i].x;
@@ -79,23 +77,41 @@ Ship.prototype.hitTest = function(){
                 temp2 = -1;
             }
 
-			if(GAME.collision_CTX.getImageData(temp,temp2,1,1).data[0] == 255){ //sprawdzanie r
-				// Jeśli się pokrywa rozwal kamien i zwróć true (co jednocześnie przerwie testowanie innych kamieni).
-              // GAME.rocks[r].remove();
-                console.log("Kolizja");
-				return true
-			}else{
-                console.log("BRAK");
-                return false
-            }
+			if(GAME.collision_CTX.getImageData(temp,temp2,1,1).data[0] == 255){ //sprawdzanie z kolorem kamieni
+				return true;
+			}
 		}
 	}
 	return false
 };
 
+Ship.prototype.hitPowerUp = function(){
+	for(var i = 0; i < 3; i++){
+		var temp = this.points[i].x;
+        var temp2 = this.points[i].y;
+        if(isNaN(temp)){
+            temp = -1;
+        }
+        if(isNaN(temp2)){
+            temp2 = -1;
+        }
+        
+        if(GAME.collision_CTX.getImageData(temp,temp2,1,1).data[2] == 255){ //sprawdzanie z kolorem powerUpa
+        	return true;
+        }
+
+	}
+	return false;
+}
+
 Ship.prototype.draw = function(){
-	if(this.hitTest()){
+	if(this.hitRocks()){ //kolizje ze skałami
        GAME.endGame();
+	}
+	if(this.hitPowerUp()){ //kolizje z powerupem
+		GAME.powerUp.random();
+		this.r += 0.005;
+		GAME.PlayerScore += 20;
 	}
 	
 	GAME.ctx.fillStyle = 'white';

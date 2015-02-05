@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 	<meta charset="UTF-8">
-	<title>Document</title>
+	<title>Asteroids</title>
 	<style rel="stylesheet" type="text/css">
 	body{
 		margin:0;
@@ -23,6 +23,7 @@
 	<script src="js/rock.js"></script>
 	<script src="js/powerUp.js"></script>
 	<script src="js/game.js"></script>
+
     <style>
         .endgame{
             background: url("Duck-hunt-dog.jpg") no-repeat;
@@ -30,8 +31,8 @@
             width: 448px;
             position: absolute;
             z-index: 99999;
-            top: 40%;
-            left: 40%;
+            top: 20%;
+            left: 30%;
             transform: translate(-50%,-50%);
             text-align: center;
             color: #fff;
@@ -42,33 +43,59 @@
         .animated {
             -webkit-animation-duration: 1s;
             animation-duration: 1s;
-            -webkit-animation-fill-mode: both;
-            animation-fill-mode: both;
             animation-iteration-count:infinite;
             -webkit-animation-iteration-count:infinite;
         }
 
         @-webkit-keyframes bounce {
             0%, 20%, 50%, 80%, 100% {-webkit-transform: translateY(0);}
-            40% {-webkit-transform: translateY(-30px);}
-            60% {-webkit-transform: translateY(-15px);}
+            40% {-webkit-transform: translateY(-7px);}
+            60% {-webkit-transform: translateY(-3px);}
         }
 
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-30px);}
-            60% {transform: translateY(-15px);}
+            40% {transform: translateY(-7px);}
+            60% {transform: translateY(-3px);}
         }
 
         .bounce {
             -webkit-animation-name: bounce;
             animation-name: bounce;
         }
+       .btn {
+            background: #3498db;
+         background-image: -webkit-linear-gradient(#3498db, #2980b9);
+         background-image: -o-linear-gradient(#3498db, #2980b9);
+         background-image: linear-gradient(#3498db, #2980b9);
+         -webkit-border-radius: 11;
+         -moz-border-radius: 11;
+         border-radius: 11px;
+         font-family: Arial;
+         color: #ffffff;
+         font-size: 20px;
+         padding: 10px 20px 10px 20px;
+         text-decoration: none;
+         width: 100px;
+         margin: 0 auto;
+         margin-top: 270px;
+       }
+
+        .btn:hover {
+            background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+}
     </style>
 </head>
 <body>
 	<div id="end" class="endgame animated bounce">
-        <h1>Przegrałeś</h1>
+        <h1 id = "endText"></h1>
+        <div id="reset-btn" class="btn">Zagraj Ponownie!</div>
     </div>
 </body>
 </html>

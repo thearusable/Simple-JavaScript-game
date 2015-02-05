@@ -14,13 +14,26 @@ VAR = {
 
 GAME = {
 	init: function(){
-		//to takie cos(canvas)
-		GAME.canvas = document.createElement('canvas');
-		//context
-		GAME.ctx = GAME.canvas.getContext('2d');
-		GAME.collision_canvas = document.createElement('canvas'); // <- Nowy CANVAS
+		GAME.HI = 0;
 
-		GAME.collision_CTX = GAME.collision_canvas.getContext('2d'); // <- Nowy CTX
+		var score = localStorage.getItem("HI");
+		if(score != null) GAME.HI = score;
+
+		GAME.PlayerScore = 0;
+		VAR.FPS = 60;
+		GAME.replay = false;
+		
+		GAME.canvas = document.createElement('canvas');
+		GAME.collision_canvas = document.createElement('canvas'); 
+		GAME.HUD = document.createElement('canvas');
+
+		GAME.ctx = GAME.canvas.getContext('2d');
+		GAME.collision_CTX = GAME.collision_canvas.getContext('2d'); 
+		GAME.HUD_CTX = GAME.HUD.getContext('2d');
+
+		GAME.HUD_CTX.font = "20px Georgia";
+		GAME.HUD_CTX.textAlign = 'center'; 
+
 		GAME.layout();
 		window.addEventListener('resize',GAME.layout, false);
 		window.addEventListener('keydown', GAME.onKeyDown, false);
@@ -28,7 +41,8 @@ GAME = {
 
 
 		document.body.appendChild(GAME.canvas);
-		document.body.appendChild(GAME.collision_canvas); // debug na czerwono
+		//document.body.appendChild(GAME.collision_canvas); // debug na czerwono
+		document.body.appendChild(GAME.HUD);
 
 		GAME.powerUp = new PowerUp();
 
@@ -51,7 +65,6 @@ GAME = {
 		if(e.keyCode==38) GAME.key_up = true; //gora
 		if(e.keyCode==39) GAME.key_right = true; //prawo
 		if(e.keyCode==40) GAME.key_down = true; //dol
-
 	},
 
 	onKeyUp: function(e){
@@ -69,9 +82,11 @@ GAME = {
 		GAME.canvas.width = VAR.W;
 		GAME.canvas.height = VAR.H;
 
-		GAME.collision_canvas.width = VAR.W; // Width novego Canvasa
-		GAME.collision_canvas.height = VAR.H; // Height novego Canvasa
-		GAME.collision_CTX.fillStyle = 'red'; // Malu Malu na czerwono
+		GAME.collision_canvas.width = VAR.W;
+		GAME.collision_canvas.height = VAR.H; 
+
+		GAME.HUD.width = VAR.W;
+		GAME.HUD.height = 80;
 
 		GAME.ctx.fillStyle = 'white';
 		GAME.ctx.strokeStyle = 'white';
@@ -81,43 +96,58 @@ GAME = {
 	},
 
 	animeLoop: function(time){
-		requestAnimationFrame(GAME.animeLoop);
+			requestAnimationFrame(GAME.animeLoop);
 
-		if(time - VAR.LastTime >= 1000/VAR.FPS){
-			//update
-            GAME.ship.update();
-			GAME.rocks[0].update();
-			GAME.rocks[1].update();
-			GAME.rocks[2].update();
-			GAME.rocks[3].update();
-			GAME.rocks[4].update();
-			GAME.rocks[5].update();
-			GAME.rocks[6].update();
-			GAME.rocks[7].update();
+			if(time - VAR.LastTime >= 1000/VAR.FPS){
+				//update
+           		GAME.ship.update();
 
+           		for(var i = 0; i < GAME.rocks.length; i++){
+           			GAME.rocks[i].update();
+           		}
+				
+           		GAME.PlayerScore += 0.016;
 
-			VAR.LastTime = time;
-			GAME.ctx.clearRect(0,0,VAR.W, VAR.H);
-			GAME.collision_CTX.clearRect(0,0,VAR.W, VAR.H);
-			//draw
+				VAR.LastTime = time;
 
-            GAME.rocks[0].draw();
-			GAME.rocks[1].draw();
-			GAME.rocks[2].draw();
-			GAME.rocks[3].draw();
-			GAME.rocks[4].draw();
-			GAME.rocks[5].draw();
-			GAME.rocks[6].draw();
-			GAME.rocks[7].draw();
-			GAME.powerUp.draw();
-            GAME.ship.draw();
-		}
+				GAME.ctx.clearRect(0,0,VAR.W, VAR.H);
+				GAME.collision_CTX.clearRect(0,0,VAR.W, VAR.H);
+				GAME.HUD_CTX.clearRect(0,0,VAR.W,80);
+
+				for(var i = 0; i < GAME.rocks.length; i++){
+           			GAME.rocks[i].draw();
+           		}
+
+				GAME.powerUp.draw();
+            	GAME.ship.draw();
+
+            	GAME.updateHUD();
+			}
 	},
 
-	endGame: function(){
+	endGame: function(e){
 
+		document.getElementById('reset-btn').onclick = function(){
+			document.location.reload(true);
+		}
+
+		if(GAME.PlayerScore > GAME.HI){
+			localStorage.setItem("HI", GAME.PlayerScore.toFixed(0));
+		}
+
+		document.getElementById('endText').innerHTML = "Twój Wynik: " + GAME.PlayerScore.toFixed(0);
         document.getElementById('end').style.display="block";
-        VAR.FPS = 0;
-    }
+        document.getElementById('reset-btn').style.display = "block";
 
+        VAR.FPS = 0;
+    },
+
+    updateHUD: function(){
+    	GAME.HUD_CTX.font = "20px Verdana";
+		GAME.HUD_CTX.fillStyle = "blue";
+    	GAME.HUD_CTX.fillText("Punkty: " + GAME.PlayerScore.toFixed(0), 200, 30); 
+    	if(GAME.HI > 0){
+    		GAME.HUD_CTX.fillText("REKORD: " + GAME.HI, 10, 30); 
+    	}
+    }
 }
