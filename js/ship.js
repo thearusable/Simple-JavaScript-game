@@ -30,11 +30,11 @@ Ship.prototype.setPosition = function(xx,yy){
 	if(yy > 0 && yy < VAR.H){
 		this.center_y = yy;
 	}
-}
+};
 
 Ship.prototype.rotate = function(angle){
 	this.angle += angle;
-}
+};
 
 Ship.prototype.update = function(){
 	if(GAME.key_left) this.rotate(-7); //lewo
@@ -64,10 +64,40 @@ Ship.prototype.update = function(){
 	this.center_x+=this.modX;
 	this.center_y+=this.modY;
 	
-}
+};
+
+Ship.prototype.hitTest = function(){
+	// Jeśli żaden z puntów tworzących statek nie pokrywa się z żadnym z kamieni to wszystko jest OK
+	for (var i = 0; i < this.points.length; i++) {
+		for(var r=0; r<GAME.rocks.length; r++){
+            var temp = this.points[i].x;
+            var temp2 = this.points[i].y;
+            if(isNaN(temp)){
+                temp = -1;
+            }
+            if(isNaN(temp2)){
+                temp2 = -1;
+            }
+
+			if(GAME.collision_CTX.getImageData(temp,temp2,1,1).data[0] == 255){ //sprawdzanie r
+				// Jeśli się pokrywa rozwal kamien i zwróć true (co jednocześnie przerwie testowanie innych kamieni).
+              // GAME.rocks[r].remove();
+                console.log("Kolizja");
+				return true
+			}else{
+                console.log("BRAK");
+                return false
+            }
+		}
+	}
+	return false
+};
 
 Ship.prototype.draw = function(){
-
+	if(this.hitTest()){
+       GAME.endGame();
+	}
+	
 	GAME.ctx.fillStyle = 'white';
 	GAME.ctx.strokeStyle = 'white';
 	GAME.ctx.lineWidth = 4;
@@ -75,7 +105,7 @@ Ship.prototype.draw = function(){
 	for(var i=0; i < 3; i++){
 		this.temp_a = i === 0 ? this.angle : (this.angle + 180 + (i==1 ? this.rear_a : -this.rear_a));
 		this.temp_r = i === 0 ? this.r * 1 : this.r * 0.6;
-		
+
 		this.points[i].x = (Math.sin(Math.PI / 180 * this.temp_a) * this.temp_r * VAR.MIN) + this.center_x;
 		this.points[i].y = (-Math.cos(Math.PI / 180 * this.temp_a) * this.temp_r * VAR.MIN) + this.center_y;
 		//
