@@ -1,3 +1,1 @@
-WEB
-===
-DAJ ME ADMINA
+Projekt na technologię sieci WEB
