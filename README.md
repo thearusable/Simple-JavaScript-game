@@ -1,1 +1,1 @@
-Projekt na technologię sieci WEB
+Very basic school project written in JavaScript.
